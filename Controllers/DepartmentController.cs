@@ -1,18 +1,24 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CompanyConsumer.Models;
 
-
 namespace CompanyConsumer.Controllers
 {
-    public class EmployeeController : Controller
+    public class DepartmentController : Controller
     {
-        ServiceClient servicesClient = new ServiceClient();
+        // GET: Department
+  
 
-        // GET: Employee
+
+
+
+
+        ServiceClient servicesClient = new ServiceClient();
+        // GET: Department
         public ViewResult Index(string sortOrder, string search, string currentFilter, int? page)
         {
             ViewBag.CurrentSort = sortOrder;
@@ -28,52 +34,51 @@ namespace CompanyConsumer.Controllers
                 search = currentFilter; //  nếu có thì render phần dữ liệu search ra
             }
             ViewBag.CurrentFilter = search;
-            var employees = from s in servicesClient.GetEmployees() select s;
+            var departments = from s in servicesClient.getAllDepartment() select s;
             if (!String.IsNullOrEmpty(search)) // check nếu search string có thì in ra hoặc không thì không in ra
             {
-                employees = employees.Where(s => s.Department.DepartmentName.Contains(search) || s.Department.DepartmentName.Contains(search)); // contains là để check xem lastname hoặc firstName có chứa search string ở trên 
+                departments = departments.Where(s => s.DepartmentName.Contains(search) || s.DepartmentName.Contains(search)); // contains là để check xem lastname hoặc firstName có chứa search string ở trên 
             }
             switch (sortOrder)
             {
                 case "name desc":
-                    employees = employees.OrderByDescending(s => s.Department.DepartmentName); // các case tương đương với các cột muốn sort
+                    departments = departments.OrderByDescending(s => s.DepartmentName); // các case tương đương với các cột muốn sort
                     break;
 
                 default:
-                    employees = employees.OrderBy(s => s.Department.DepartmentName);
+                    departments = departments.OrderBy(s => s.DepartmentName);
                     break;
             }
 
-            return View(employees.ToList());
-            /*return View();*/
+            return View(departments.ToList());
+
         }
 
-
-        // GET: Employee/Details/5
+        // GET: Department/Details/5
         public ActionResult Details(int id)
         {
-            var employee = servicesClient.GetEmployees().Where(b => b.EmployeeID == id).FirstOrDefault();
-            return View(employee);
+            var department = servicesClient.getAllDepartment().Where(b => b.DepartmentID == id).FirstOrDefault();
+            return View(department);
+
         }
 
-        // GET: Employee/Create
+        // GET: Department/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Employee/Create
+        // POST: Department/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-
-        public ActionResult Create(Employee newEmp)
+        public ActionResult Create(Department newDepartment)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    servicesClient.createEmployee(newEmp);
-                    return RedirectToAction("Index", "Employee");
+                    servicesClient.CreateDepartment(newDepartment);
+                    return RedirectToAction("Index", "Department");
                 }
 
                 // TODO: Add insert logic here
@@ -86,13 +91,13 @@ namespace CompanyConsumer.Controllers
             }
         }
 
-        // GET: Employee/Edit/5
+        // GET: Department/Edit/5
         public ActionResult Edit(int id)
         {
             return View();
         }
 
-        // POST: Employee/Edit/5
+        // POST: Department/Edit/5
         [HttpPost]
         public ActionResult Edit(int id, FormCollection collection)
         {
@@ -108,13 +113,13 @@ namespace CompanyConsumer.Controllers
             }
         }
 
-        // GET: Employee/Delete/5
+        // GET: Department/Delete/5
         public ActionResult Delete(int id)
         {
             return View();
         }
 
-        // POST: Employee/Delete/5
+        // POST: Department/Delete/5
         [HttpPost]
         public ActionResult Delete(int id, FormCollection collection)
         {
@@ -129,6 +134,5 @@ namespace CompanyConsumer.Controllers
                 return View();
             }
         }
-
     }
 }

@@ -44,7 +44,7 @@ namespace CompanyConsumer.Models
             };
             return client.createDepartment(department);
         }
-        public bool CreateDepartment(Employee newEmp)
+        public bool createEmployee(Employee newEmp)
         {
             var employee = new EmployeeServices.Employee()
             {
